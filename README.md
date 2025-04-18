@@ -16,8 +16,11 @@ This project implements a complete LL(1) parser in C that includes:
 This LL(1) parser uses the following grammar:
 
 E → T X
+
 X → + E | ε
+
 T → int Y | ( E )
+
 Y → * T | ε
 
 ### Terminals
