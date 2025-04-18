@@ -32,7 +32,7 @@ Y → * T | ε
 
 ---
 
-## 🛠 How It Works
+##  How It Works
 
 ### 1. Tokenization
 The input string (e.g., `int + int * int`) is converted into a sequence of tokens:
