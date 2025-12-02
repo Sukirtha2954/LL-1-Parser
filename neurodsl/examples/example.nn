@@ -1,0 +1,17 @@
+
+# example neural model DSL
+network SimpleCNN {
+    input (1, 28, 28)
+    conv2d filters=32, kernel=3, activation=relu
+    maxpool2d size=2
+    flatten
+    dense units=64, activation=relu
+    output units=10, activation=softmax
+}
+
+train {
+    optimizer: adam
+    loss: categorical_crossentropy
+    epochs: 2
+    dataset: mnist
+}
