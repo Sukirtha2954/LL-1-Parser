@@ -1,91 +1,120 @@
-# LL-1-Parser
+NeuroDSL — A Domain Specific Language for Defining Neural Networks
+A compiler written in C that parses a custom deep learning language, builds an AST, and generates Python/TensorFlow code.
+<p align="center"> <img src="https://img.shields.io/badge/language-C-blue" /> <img src="https://img.shields.io/badge/python-3.9+-green" /> <img src="https://img.shields.io/badge/tensorflow-2.x-orange" /> <img src="https://img.shields.io/badge/project-type-compiler%20%2F%20DSL-lightgrey" /> </p>
+ Overview
 
-# LL(1) Parser in C
+NeuroDSL is a small compiler that lets you define neural networks using a simple, human-readable domain-specific language (DSL).
 
-This project implements a complete LL(1) parser in C that includes:
+The compiler:
 
-- FIRST and FOLLOW set computation  
-- LL(1) parsing table construction  
-- Stack-based predictive parsing  
-- A tokenizer that converts a sample input into tokenized form  
+✔ Tokenizes the DSL input
+✔ Parses it using recursive descent
+✔ Builds a typed Abstract Syntax Tree (AST)
+✔ Generates Python code that constructs + trains the model using TensorFlow/Keras
+✔ Supports real datasets (MNIST)
+✔ Can be extended easily
 
----
+This project demonstrates:
 
-##  Grammar Used
+Compiler design fundamentals
 
-This LL(1) parser uses the following grammar:
+LL(1)-style recursive descent parsing
 
-E → T X
+AST construction
 
-X → + E | ε
+Code generation
 
-T → int Y | ( E )
+DSL design for machine learning
 
-Y → * T | ε
+ Example DSL Program
 
-### Terminals
-- `int` (integer literals)
-- `+` (addition)
-- `*` (multiplication)
-- `(` and `)`
-- `$` (end of input)
+examples/example.nn:
 
-### Non-Terminals
-- `E`, `X`, `T`, `Y`
+network SimpleCNN {
+    input (1, 28, 28)
+    conv2d filters=32, kernel=3, activation=relu
+    maxpool2d size=2
+    flatten
+    dense units=64, activation=relu
+    output units=10, activation=softmax
+}
 
----
+train {
+    optimizer: adam
+    loss: categorical_crossentropy
+    epochs: 2
+    dataset: mnist
+}
 
-##  How It Works
+ Features Supported
+ Layers
 
-### 1. Tokenization
-The input string (e.g., `int + int * int`) is converted into a sequence of tokens:
-Input: int + int * int
-Tokens: INT_TOK + INT_TOK * INT_TOK $
+input (channels, height, width)
 
-Each token corresponds to a terminal in the grammar.
+conv2d filters=…, kernel=…, activation=…
 
-### 2. FIRST Set Computation
-- For each terminal: `FIRST(terminal) = { terminal }`
-- For each non-terminal:
-  - Examine each production.
-  - For a sequence A → X Y ..., compute `FIRST(X)`:
-    - If `FIRST(X)` contains ε, continue to `Y`, and so on.
-    - Add all terminals found (excluding ε unless needed).
+maxpool2d size=…
 
-### 3. FOLLOW Set Computation
-- FOLLOW(Start Symbol) includes `$`
-- For each non-terminal A in production B → α A β:
-  - Add FIRST(β) to FOLLOW(A)
-  - If β can derive ε, also add FOLLOW(B) to FOLLOW(A)
+flatten
 
-### 4. LL(1) Parsing Table Construction
-- For each production A → α:
-  - For each terminal `t` in FIRST(α), add `A → α` to table[A][t]
-  - If ε ∈ FIRST(α), then for each terminal `t` in FOLLOW(A), add `A → ε` to table[A][t]
+dense units=…, activation=…
 
-### 5. Stack-Based Predictive Parsing
-- Stack is initialized with `$` and the start symbol (`E`)
-- The input token stream ends with `$`
-- On each iteration:
-  - Match the top of the stack with the current input token
-  - If top is non-terminal: use the parsing table to get production and push RHS in reverse
-  - If top is terminal: match and pop
-  - If mismatch: reject
-- Accept if both input and stack reach `$`
+output units=…, activation=…
 
----
-## Features
-- Supports ε-productions
-- Uses arrays for the parsing table
-- Prints FIRST and FOLLOW sets
-- Prints the parsing table in human-readable form
-- Shows detailed parsing trace
+ Training Options
 
----
+Optimizer (adam, sgd, etc.)
 
-##  How to Run
+Loss function (categorical_crossentropy)
 
-1. Clone the repository
-2. Compile using GCC:
-```bash
-gcc parser.c -o parser
+Epochs
+
+Dataset:
+
+mnist
+
+(More datasets can be added easily)
+
+ Build Instructions
+1. Clone
+git clone https://github.com/<your-username>/neurodsl.git
+cd neurodsl
+
+2. Compile (GCC)
+gcc -Iinclude src/main.c src/lexer.c src/parser.c src/codegen.c -o neurodsl
+
+3. Run
+./neurodsl examples/example.nn
+
+
+This generates:
+
+generated/model.py
+
+4. Execute the generated TensorFlow model
+python generated/model.py
+
+ Output Example
+Model: "sequential"
+_________________________________________________________________
+conv2d ...
+max_pooling2d ...
+flatten ...
+dense ...
+dense ...
+_________________________________________________________________
+Epoch 1/2
+accuracy: 0.8851 - val_accuracy: 0.9802
+Epoch 2/2
+accuracy: 0.9776 - val_accuracy: 0.9843
+Test accuracy: 0.9829
+
+ Project Structure
+neurodsl/
+│── README.md
+│── LICENSE
+│── examples/
+│   └── example.nn
+│── generated/
+│── include/
+│── src/
