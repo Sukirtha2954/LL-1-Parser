@@ -1,6 +1,5 @@
 NeuroDSL — A Domain Specific Language for Defining Neural Networks
 A compiler written in C that parses a custom deep learning language, builds an AST, and generates Python/TensorFlow code.
-<p align="center"> <img src="https://img.shields.io/badge/language-C-blue" /> <img src="https://img.shields.io/badge/python-3.9+-green" /> <img src="https://img.shields.io/badge/tensorflow-2.x-orange" /> <img src="https://img.shields.io/badge/project-type-compiler%20%2F%20DSL-lightgrey" /> </p>
  Overview
 
 NeuroDSL is a small compiler that lets you define neural networks using a simple, human-readable domain-specific language (DSL).
