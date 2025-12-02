@@ -1,17 +1,23 @@
 NeuroDSL — A Domain Specific Language for Defining Neural Networks
+
 A compiler written in C that parses a custom deep learning language, builds an AST, and generates Python/TensorFlow code.
- Overview
 
-NeuroDSL is a small compiler that lets you define neural networks using a simple, human-readable domain-specific language (DSL).
+Overview
 
-The compiler:
+NeuroDSL is a small compiler that allows users to define neural networks using a simple, human-readable domain-specific language (DSL).
+The compiler performs the following steps:
 
-✔ Tokenizes the DSL input
-✔ Parses it using recursive descent
-✔ Builds a typed Abstract Syntax Tree (AST)
-✔ Generates Python code that constructs + trains the model using TensorFlow/Keras
-✔ Supports real datasets (MNIST)
-✔ Can be extended easily
+Tokenizes the DSL input
+
+Parses it using a hand-written recursive descent parser
+
+Builds a typed Abstract Syntax Tree (AST)
+
+Generates Python code that constructs and trains a neural network using TensorFlow/Keras
+
+Supports real datasets (currently MNIST)
+
+Can be easily extended with additional layers, datasets, and language features
 
 This project demonstrates:
 
@@ -19,15 +25,15 @@ Compiler design fundamentals
 
 LL(1)-style recursive descent parsing
 
-AST construction
+AST construction using C structures
 
-Code generation
+Code generation targeting Python/TensorFlow
 
-DSL design for machine learning
+DSL design for machine learning workflows
 
- Example DSL Program
+Example DSL Program
 
-examples/example.nn:
+examples/example.nn
 
 network SimpleCNN {
     input (1, 28, 28)
@@ -45,8 +51,8 @@ train {
     dataset: mnist
 }
 
- Features Supported
- Layers
+Features Supported
+Layers
 
 input (channels, height, width)
 
@@ -60,55 +66,55 @@ dense units=…, activation=…
 
 output units=…, activation=…
 
- Training Options
+Training Options
 
-Optimizer (adam, sgd, etc.)
+Optimizer (e.g., adam, sgd)
 
-Loss function (categorical_crossentropy)
+Loss function (e.g., categorical_crossentropy)
 
-Epochs
+Number of epochs
 
-Dataset:
+Dataset selection
 
-mnist
+mnist (built-in)
 
-(More datasets can be added easily)
+Extendable for more datasets
 
- Build Instructions
-1. Clone
+Build Instructions
+1. Clone the Repository
 git clone https://github.com/<your-username>/neurodsl.git
 cd neurodsl
 
-2. Compile (GCC)
+2. Compile the Compiler (GCC)
 gcc -Iinclude src/main.c src/lexer.c src/parser.c src/codegen.c -o neurodsl
 
-3. Run
+3. Run the Compiler
 ./neurodsl examples/example.nn
 
 
-This generates:
+This generates Python code at:
 
 generated/model.py
 
-4. Execute the generated TensorFlow model
+4. Execute the Generated Model (Python + TensorFlow)
 python generated/model.py
 
- Output Example
+Output Example
 Model: "sequential"
-_________________________________________________________________
+---------------------------------------------------------------------
 conv2d ...
 max_pooling2d ...
 flatten ...
 dense ...
 dense ...
-_________________________________________________________________
+---------------------------------------------------------------------
 Epoch 1/2
 accuracy: 0.8851 - val_accuracy: 0.9802
 Epoch 2/2
 accuracy: 0.9776 - val_accuracy: 0.9843
 Test accuracy: 0.9829
 
- Project Structure
+Project Structure
 neurodsl/
 │── README.md
 │── LICENSE
@@ -116,4 +122,13 @@ neurodsl/
 │   └── example.nn
 │── generated/
 │── include/
+│   ├── ast.h
+│   ├── lexer.h
+│   ├── parser.h
+│   └── codegen.h
 │── src/
+    ├── main.c
+    ├── lexer.c
+    ├── parser.c
+    ├── codegen.c
+    └── ast.c   (optional utilities)
